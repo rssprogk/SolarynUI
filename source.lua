@@ -1,4 +1,9 @@
-local SolarynUI = {_version="1.0.0",_flags={},_configs={},_notifs={}}
+-- ═══════════════════════════════════════════════════════════════════════════
+--  SolarynUI — Premium Acrylic GUI Library v1.1.0
+--  Mobile-Optimized | Key System | Config System | Multi-Theme
+-- ═══════════════════════════════════════════════════════════════════════════
+
+local SolarynUI = {_version="1.1.0",_flags={},_configs={},_notifs={}}
 local Players=game:GetService("Players")
 local UIS=game:GetService("UserInputService")
 local TS=game:GetService("TweenService")
@@ -166,9 +171,9 @@ function SolarynUI:CreateWindow(opts)
     end
 
     pcall(function() if core:FindFirstChild("SolarynUI") then core.SolarynUI:Destroy() end end)
-    local W=opts.Size and opts.Size[1] or(mob and 360 or 480)
-    local H=opts.Size and opts.Size[2] or(mob and 460 or 540)
-    local fs=mob and 10 or 11
+    local W=opts.Size and opts.Size[1] or(mob and 280 or 480)
+    local H=opts.Size and opts.Size[2] or(mob and 380 or 540)
+    local fs=mob and 9 or 11
 
     local gui=mk("ScreenGui",{Name="SolarynUI",ResetOnSpawn=false,ZIndexBehavior=Enum.ZIndexBehavior.Sibling,IgnoreGuiInset=true,Parent=core})
     local main=mk("Frame",{Name="M",Parent=gui,Size=UDim2.new(0,W,0,H),Position=UDim2.new(0.5,-W/2,0.5,-H/2),BackgroundColor3=T.bg,BackgroundTransparency=0.08,BorderSizePixel=0})
@@ -271,42 +276,136 @@ function SolarynUI:CreateWindow(opts)
     function Window:Minimize() minBtn.MouseButton1Click:Fire() end
     function Window:Destroy() gui:Destroy() end
 
-    -- ═══════════ HOME TAB ═══════════
+    -- ═══════════ HOME TAB (Luna-Style) ═══════════
     function Window:CreateHomeTab(hOpts)
         hOpts=hOpts or{}
         local idx=#tabDefs+1
         table.insert(tabDefs,"Home")
         local tw2=math.floor((W-24)/#tabDefs)
-        -- rebuild tab buttons
         for _,b in ipairs(tBtns) do b:Destroy() end
         tBtns={}
         for i,name in ipairs(tabDefs) do
-            local tb=mk("TextButton",{Parent=tBar,Text=name,Font=Enum.Font.GothamBold,TextSize=mob and 10 or 11,TextColor3=i==1 and T.white or T.dim,BackgroundTransparency=1,Size=UDim2.new(0,tw2,1,0),Position=UDim2.new(0,(i-1)*tw2,0,0),BorderSizePixel=0})
+            local tb=mk("TextButton",{Parent=tBar,Text=name,Font=Enum.Font.GothamBold,TextSize=mob and 9 or 11,TextColor3=i==1 and T.white or T.dim,BackgroundTransparency=1,Size=UDim2.new(0,tw2,1,0),Position=UDim2.new(0,(i-1)*tw2,0,0),BorderSizePixel=0})
             tBtns[i]=tb
             tb.MouseButton1Click:Connect(function() setTab(i) end)
         end
         Window._tBtns=tBtns
         local pg=mk("ScrollingFrame",{Parent=contentF,Visible=idx==1,Size=UDim2.new(1,0,1,0),BackgroundTransparency=1,ScrollBarThickness=3,ScrollBarImageColor3=T.accent,CanvasSize=UDim2.new(0,0,0,0),AutomaticCanvasSize=Enum.AutomaticSize.Y,BorderSizePixel=0})
-        mk("UIListLayout",{SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,8),Parent=pg})
+        mk("UIListLayout",{SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,6),Parent=pg})
         pad(pg,4,8,2,2)
         tPages[idx]=pg
-        -- Welcome card
-        local wc=mk("Frame",{Parent=pg,BackgroundColor3=T.card,BackgroundTransparency=0.1,Size=UDim2.new(1,0,0,0),AutomaticSize=Enum.AutomaticSize.Y,BorderSizePixel=0,LayoutOrder=1})
-        rnd(wc,12) pad(wc,14,14,14,14)
-        mk("UIListLayout",{SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,6),Parent=wc})
-        mk("TextLabel",{Parent=wc,Text="👋 Welcome, "..LP.DisplayName.."!",Font=Enum.Font.GothamBold,TextSize=15,TextColor3=T.white,BackgroundTransparency=1,Size=UDim2.new(1,0,0,20),TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=1})
-        -- Executor info
+
+        -- ═══ AVATAR + WELCOME CARD ═══
+        local avCard=mk("Frame",{Parent=pg,BackgroundColor3=T.card,BackgroundTransparency=0.05,Size=UDim2.new(1,0,0,mob and 60 or 70),BorderSizePixel=0,LayoutOrder=1})
+        rnd(avCard,12)
+        mk("UIGradient",{Color=ColorSequence.new({ColorSequenceKeypoint.new(0,T.card2),ColorSequenceKeypoint.new(1,T.card)}),Parent=avCard})
+        local avSize=mob and 42 or 52
+        local avImg=mk("ImageLabel",{Parent=avCard,Size=UDim2.new(0,avSize,0,avSize),Position=UDim2.new(0,12,0.5,-avSize/2),BackgroundColor3=T.card2,BorderSizePixel=0,Image="https://www.roblox.com/headshot-thumbnail/image?userId="..LP.UserId.."&width=150&height=150"})
+        rnd(avImg,avSize/2)
+        mk("TextLabel",{Parent=avCard,Text="Hello, "..LP.DisplayName,Font=Enum.Font.GothamBold,TextSize=mob and 13 or 15,TextColor3=T.white,BackgroundTransparency=1,Position=UDim2.new(0,avSize+22,0,mob and 10 or 14),Size=UDim2.new(1,-avSize-30,0,20),TextXAlignment=Enum.TextXAlignment.Left})
+        local windowName=opts.Name or opts.Title or"SolarynUI"
+        mk("TextLabel",{Parent=avCard,Text=LP.Name.." · "..windowName,Font=Enum.Font.Gotham,TextSize=mob and 10 or 11,TextColor3=T.dim,BackgroundTransparency=1,Position=UDim2.new(0,avSize+22,0,mob and 30 or 36),Size=UDim2.new(1,-avSize-30,0,16),TextXAlignment=Enum.TextXAlignment.Left})
+
+        -- ═══ SERVER INFO GRID ═══
+        local svCard=mk("Frame",{Parent=pg,BackgroundColor3=T.card,BackgroundTransparency=0.1,Size=UDim2.new(1,0,0,0),AutomaticSize=Enum.AutomaticSize.Y,BorderSizePixel=0,LayoutOrder=2})
+        rnd(svCard,12) pad(svCard,10,10,10,10)
+        mk("UIListLayout",{SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,6),Parent=svCard})
+        mk("TextLabel",{Parent=svCard,Text="Server",Font=Enum.Font.GothamBold,TextSize=mob and 12 or 14,TextColor3=T.white,BackgroundTransparency=1,Size=UDim2.new(1,0,0,18),TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=0})
+        mk("TextLabel",{Parent=svCard,Text="Information on the session you're currently in",Font=Enum.Font.Gotham,TextSize=mob and 9 or 10,TextColor3=T.dim,BackgroundTransparency=1,Size=UDim2.new(1,0,0,14),TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=1})
+
+        -- Helper: mini info card
+        local function miniCard(parent,label,value,order)
+            local mc=mk("Frame",{Parent=parent,BackgroundColor3=T.card2,Size=UDim2.new(0.48,0,0,mob and 32 or 38),BorderSizePixel=0,LayoutOrder=order})
+            rnd(mc,8) pad(mc,6,6,10,10)
+            mk("UIListLayout",{SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,1),Parent=mc})
+            mk("TextLabel",{Parent=mc,Text=label,Font=Enum.Font.GothamBold,TextSize=mob and 9 or 10,TextColor3=T.white,BackgroundTransparency=1,Size=UDim2.new(1,0,0,12),TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=1})
+            local vLbl=mk("TextLabel",{Parent=mc,Text=value,Font=Enum.Font.Gotham,TextSize=mob and 8 or 9,TextColor3=T.dim,BackgroundTransparency=1,Size=UDim2.new(1,0,0,12),TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=2})
+            return vLbl
+        end
+
+        local gridRow1=mk("Frame",{Parent=svCard,BackgroundTransparency=1,Size=UDim2.new(1,0,0,mob and 32 or 38),LayoutOrder=2})
+        mk("UIListLayout",{FillDirection=Enum.FillDirection.Horizontal,Padding=UDim.new(0,6),Parent=gridRow1})
+        miniCard(gridRow1,"Players",tostring(#Players:GetPlayers()).." playing",1)
+        miniCard(gridRow1,"Maximum Players",tostring(Players.MaxPlayers).." can join",2)
+
+        local gridRow2=mk("Frame",{Parent=svCard,BackgroundTransparency=1,Size=UDim2.new(1,0,0,mob and 32 or 38),LayoutOrder=3})
+        mk("UIListLayout",{FillDirection=Enum.FillDirection.Horizontal,Padding=UDim.new(0,6),Parent=gridRow2})
+        local ping="N/A"
+        pcall(function() ping=math.floor(game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValue()).."ms" end)
+        miniCard(gridRow2,"Latency",ping,1)
+        local region="VN"
+        pcall(function() region=string.split(game.JobId,"-")[1] end)
+        miniCard(gridRow2,"Server Region",region,2)
+
+        local gridRow3=mk("Frame",{Parent=svCard,BackgroundTransparency=1,Size=UDim2.new(1,0,0,mob and 32 or 38),LayoutOrder=4})
+        mk("UIListLayout",{FillDirection=Enum.FillDirection.Horizontal,Padding=UDim.new(0,6),Parent=gridRow3})
+        local inForLbl=miniCard(gridRow3,"In Server For","00:00:00",1)
+        local joinBtn=miniCard(gridRow3,"Join Script","Tap to copy",2)
+        -- Update in-server timer
+        local svT0=tick()
+        task.spawn(function() while task.wait(1) do local e=tick()-svT0;inForLbl.Text=string.format("%02d:%02d:%02d",math.floor(e/3600),math.floor(e/60)%60,math.floor(e)%60) end end)
+        -- Make join script copyable
+        local joinHit=mk("TextButton",{Parent=gridRow3,Text="",BackgroundTransparency=1,Size=UDim2.new(0.48,0,1,0),Position=UDim2.new(0.52,0,0,0)})
+        joinHit.MouseButton1Click:Connect(function()
+            local js='game:GetService("TeleportService"):TeleportToPlaceInstance('..game.PlaceId..', "'..game.JobId..'")'
+            pcall(function() setclipboard(js) end)
+            SolarynUI:Notify({Title="Copied",Content="Join script copied!",Duration=3})
+        end)
+
+        -- ═══ EXECUTOR SUPPORT CARD ═══
         local exName="Unknown"
         pcall(function() if identifyexecutor then exName=identifyexecutor() elseif getexecutorname then exName=getexecutorname() end end)
         local supported=false
         if hOpts.SupportedExecutors then for _,e in ipairs(hOpts.SupportedExecutors) do if exName:lower():find(e:lower()) then supported=true break end end end
-        mk("TextLabel",{Parent=wc,Text="🖥️ Executor: "..exName..(supported and " ✅" or (hOpts.SupportedExecutors and " ⚠️" or "")),Font=Enum.Font.Gotham,TextSize=12,TextColor3=supported and T.green or T.dim,BackgroundTransparency=1,Size=UDim2.new(1,0,0,16),TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=2})
-        mk("TextLabel",{Parent=wc,Text="🎮 Game: "..game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name,Font=Enum.Font.Gotham,TextSize=12,TextColor3=T.dim,BackgroundTransparency=1,Size=UDim2.new(1,0,0,16),TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=3})
-        if hOpts.DiscordInvite then
-            local dc=mk("TextButton",{Parent=wc,Text="💬 Join Discord",Font=Enum.Font.GothamBold,TextSize=12,TextColor3=T.white,BackgroundColor3=Color3.fromRGB(88,101,242),Size=UDim2.new(1,0,0,32),BorderSizePixel=0,LayoutOrder=4})
-            rnd(dc,8)
-            dc.MouseButton1Click:Connect(function() pcall(function() setclipboard("https://discord.gg/"..hOpts.DiscordInvite) end) SolarynUI:Notify({Title="Discord",Content="Invite link copied!",Duration=3}) end)
+        local exCard=mk("Frame",{Parent=pg,BackgroundColor3=supported and Color3.fromRGB(20,50,30) or Color3.fromRGB(60,35,15),Size=UDim2.new(1,0,0,mob and 50 or 58),BorderSizePixel=0,LayoutOrder=3})
+        rnd(exCard,12) pad(exCard,10,10,14,14)
+        mk("UIListLayout",{SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,3),Parent=exCard})
+        mk("TextLabel",{Parent=exCard,Text=exName,Font=Enum.Font.GothamBold,TextSize=mob and 13 or 15,TextColor3=supported and T.green or Color3.fromRGB(255,180,60),BackgroundTransparency=1,Size=UDim2.new(1,0,0,20),TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=1})
+        mk("TextLabel",{Parent=exCard,Text=supported and "Your Executor Is Officially Supported!" or "Your Executor Isn't Officially Supported.",Font=Enum.Font.Gotham,TextSize=mob and 9 or 11,TextColor3=supported and T.green or Color3.fromRGB(255,180,60),BackgroundTransparency=1,Size=UDim2.new(1,0,0,16),TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=2})
+
+        -- ═══ FRIENDS SECTION ═══
+        local frCard=mk("Frame",{Parent=pg,BackgroundColor3=T.card,BackgroundTransparency=0.1,Size=UDim2.new(1,0,0,0),AutomaticSize=Enum.AutomaticSize.Y,BorderSizePixel=0,LayoutOrder=4})
+        rnd(frCard,12) pad(frCard,10,10,10,10)
+        mk("UIListLayout",{SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,6),Parent=frCard})
+        mk("TextLabel",{Parent=frCard,Text="Friends",Font=Enum.Font.GothamBold,TextSize=mob and 12 or 14,TextColor3=T.white,BackgroundTransparency=1,Size=UDim2.new(1,0,0,16),TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=0})
+        mk("TextLabel",{Parent=frCard,Text="Find out what your friends are doing",Font=Enum.Font.Gotham,TextSize=mob and 9 or 10,TextColor3=T.dim,BackgroundTransparency=1,Size=UDim2.new(1,0,0,12),TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=1})
+        -- Friends counts
+        local inSv,online,offline,total=0,0,0,0
+        pcall(function()
+            local fp=LP:GetFriendsOnline(200)
+            for _,f in ipairs(fp) do
+                total=total+1
+                if f.PlaceId==game.PlaceId and f.GameId==game.JobId then inSv=inSv+1 end
+                if f.IsOnline then online=online+1 else offline=offline+1 end
+            end
+        end)
+        local frGrid=mk("Frame",{Parent=frCard,BackgroundTransparency=1,Size=UDim2.new(1,0,0,mob and 32 or 38),LayoutOrder=2})
+        mk("UIListLayout",{FillDirection=Enum.FillDirection.Horizontal,Padding=UDim.new(0,4),Parent=frGrid})
+        local function frMini(label,val,col,order)
+            local fc=mk("Frame",{Parent=frGrid,BackgroundColor3=T.card2,Size=UDim2.new(0.24,-3,1,0),BorderSizePixel=0,LayoutOrder=order})
+            rnd(fc,6) pad(fc,4,4,6,6)
+            mk("UIListLayout",{SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,1),Parent=fc})
+            mk("TextLabel",{Parent=fc,Text=label,Font=Enum.Font.GothamBold,TextSize=mob and 8 or 9,TextColor3=col or T.white,BackgroundTransparency=1,Size=UDim2.new(1,0,0,10),TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=1})
+            mk("TextLabel",{Parent=fc,Text=val.." friends",Font=Enum.Font.Gotham,TextSize=mob and 7 or 8,TextColor3=T.dim,BackgroundTransparency=1,Size=UDim2.new(1,0,0,10),TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=2})
         end
+        frMini("In Server",tostring(inSv),T.green,1)
+        frMini("Online",tostring(online),T.green,2)
+        frMini("Offline",tostring(offline),T.red,3)
+        frMini("All",tostring(total),T.white,4)
+
+        -- ═══ DISCORD CARD ═══
+        if hOpts.DiscordInvite then
+            local dcCard=mk("TextButton",{Parent=pg,Text="",BackgroundColor3=Color3.fromRGB(88,101,242),Size=UDim2.new(1,0,0,mob and 48 or 56),BorderSizePixel=0,LayoutOrder=5})
+            rnd(dcCard,12)
+            mk("UIGradient",{Color=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(88,101,242)),ColorSequenceKeypoint.new(1,Color3.fromRGB(70,80,200))}),Parent=dcCard})
+            mk("TextLabel",{Parent=dcCard,Text="Discord",Font=Enum.Font.GothamBold,TextSize=mob and 14 or 16,TextColor3=T.white,BackgroundTransparency=1,Position=UDim2.new(0,14,0,mob and 8 or 10),Size=UDim2.new(1,-20,0,20),TextXAlignment=Enum.TextXAlignment.Left})
+            mk("TextLabel",{Parent=dcCard,Text="Tap to join the Discord Server",Font=Enum.Font.Gotham,TextSize=mob and 10 or 11,TextColor3=Color3.fromRGB(200,210,255),BackgroundTransparency=1,Position=UDim2.new(0,14,0,mob and 28 or 32),Size=UDim2.new(1,-20,0,16),TextXAlignment=Enum.TextXAlignment.Left})
+            dcCard.MouseButton1Click:Connect(function()
+                pcall(function() setclipboard("https://discord.gg/"..hOpts.DiscordInvite) end)
+                SolarynUI:Notify({Title="Discord",Content="Invite link copied to clipboard!",Duration=3})
+            end)
+        end
+
         setTab(1)
         return pg
     end
@@ -529,6 +628,40 @@ function SolarynUI:CreateWindow(opts)
                 local d=mk("Frame",{Parent=f,BackgroundColor3=T.card2,Size=UDim2.new(1,0,0,1),BorderSizePixel=0,LayoutOrder=Sec._o})
             end
 
+            function Sec:AddProgressBar(o)
+                Sec._o=Sec._o+1
+                local fr=mk("Frame",{Parent=f,BackgroundTransparency=1,Size=UDim2.new(1,0,0,32),LayoutOrder=Sec._o})
+                local l=mk("TextLabel",{Parent=fr,Text=(o.Name or"Progress")..": "..(o.Default or 0).."%",Font=Enum.Font.GothamBold,TextSize=fs,TextColor3=T.white,BackgroundTransparency=1,Size=UDim2.new(1,0,0,14),TextXAlignment=Enum.TextXAlignment.Left})
+                local t=mk("Frame",{Parent=fr,BackgroundColor3=T.slTrack,Size=UDim2.new(1,0,0,8),Position=UDim2.new(0,0,0,20)})
+                rnd(t,4)
+                local fl=mk("Frame",{Parent=t,BackgroundColor3=T.slFill,Size=UDim2.new(math.clamp((o.Default or 0)/100,0,1),0,1,0)})
+                rnd(fl,4)
+                mk("UIGradient",{Color=ColorSequence.new({ColorSequenceKeypoint.new(0,T.accent2),ColorSequenceKeypoint.new(1,T.accent)}),Parent=fl})
+                return{Set=function(_,v) v=math.clamp(v,0,100);tw(fl,{Size=UDim2.new(v/100,0,1,0)},0.3);l.Text=(o.Name or"Progress")..": "..math.floor(v).."%" end}
+            end
+
+            function Sec:AddMultiToggle(o)
+                Sec._o=Sec._o+1
+                local fr=mk("Frame",{Parent=f,BackgroundTransparency=1,Size=UDim2.new(1,0,0,0),AutomaticSize=Enum.AutomaticSize.Y,LayoutOrder=Sec._o})
+                mk("UIListLayout",{SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,3),Parent=fr})
+                mk("TextLabel",{Parent=fr,Text=o.Name or"Select",Font=Enum.Font.GothamBold,TextSize=fs,TextColor3=T.white,BackgroundTransparency=1,Size=UDim2.new(1,0,0,16),TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=0})
+                local cur=o.Default or(o.Options and o.Options[1] or"")
+                if o.Flag then SolarynUI._flags[o.Flag]=cur end
+                local btns={}
+                for idx,opt in ipairs(o.Options or{}) do
+                    local ob=mk("TextButton",{Parent=fr,Text="  "..opt,Font=Enum.Font.Gotham,TextSize=fs,TextColor3=opt==cur and T.white or T.dim,BackgroundColor3=opt==cur and T.accent or T.card,Size=UDim2.new(1,0,0,mob and 24 or 26),BorderSizePixel=0,LayoutOrder=idx,TextXAlignment=Enum.TextXAlignment.Left})
+                    rnd(ob,6)
+                    btns[idx]={btn=ob,opt=opt}
+                    ob.MouseButton1Click:Connect(function()
+                        cur=opt
+                        for _,b in ipairs(btns) do tw(b.btn,{BackgroundColor3=b.opt==cur and T.accent or T.card,TextColor3=b.opt==cur and T.white or T.dim},0.2) end
+                        if o.Flag then SolarynUI._flags[o.Flag]=cur end
+                        if o.Callback then o.Callback(cur) end
+                    end)
+                end
+                return{Set=function(_,v) cur=v;for _2,b in ipairs(btns) do tw(b.btn,{BackgroundColor3=b.opt==cur and T.accent or T.card,TextColor3=b.opt==cur and T.white or T.dim},0.2) end;if o.Flag then SolarynUI._flags[o.Flag]=cur end end}
+            end
+
             return Sec
         end
 
@@ -545,30 +678,62 @@ function SolarynUI:CreateWindow(opts)
             return mk("TextLabel",{Parent=pg,Text=txt,Font=Enum.Font.Gotham,TextSize=fs,TextColor3=c,BackgroundTransparency=1,Size=UDim2.new(1,0,0,18),TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=Tab._order,TextWrapped=true})
         end
 
-        -- Config section builder
+        -- Config section builder with full scrollable config list UI
         function Tab:BuildConfigSection()
             Tab._order=Tab._order+1
             local sec=mk("Frame",{Parent=pg,BackgroundColor3=T.card,BackgroundTransparency=0.1,Size=UDim2.new(1,0,0,0),AutomaticSize=Enum.AutomaticSize.Y,BorderSizePixel=0,LayoutOrder=Tab._order})
             rnd(sec,10) pad(sec,10,10,12,12)
             mk("UIListLayout",{SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,6),Parent=sec})
             mk("TextLabel",{Parent=sec,Text="  💾 Configs",Font=Enum.Font.GothamBold,TextSize=fs+1,TextColor3=T.accent,BackgroundTransparency=1,Size=UDim2.new(1,0,0,18),TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=0})
-            local nameBox=mk("TextBox",{Parent=sec,PlaceholderText="Config name...",Text="",Font=Enum.Font.Gotham,TextSize=12,TextColor3=T.white,PlaceholderColor3=T.dim,BackgroundColor3=T.card2,Size=UDim2.new(1,0,0,28),BorderSizePixel=0,ClearTextOnFocus=false,LayoutOrder=1})
+            local nameBox=mk("TextBox",{Parent=sec,PlaceholderText="Config name...",Text="",Font=Enum.Font.Gotham,TextSize=mob and 10 or 12,TextColor3=T.white,PlaceholderColor3=T.dim,BackgroundColor3=T.card2,Size=UDim2.new(1,0,0,mob and 26 or 28),BorderSizePixel=0,ClearTextOnFocus=false,LayoutOrder=1})
             rnd(nameBox,6) pad(nameBox,0,0,8,8)
-            local bRow=mk("Frame",{Parent=sec,BackgroundTransparency=1,Size=UDim2.new(1,0,0,30),LayoutOrder=2})
-            mk("UIListLayout",{FillDirection=Enum.FillDirection.Horizontal,Padding=UDim.new(0,6),Parent=bRow})
+            local bRow=mk("Frame",{Parent=sec,BackgroundTransparency=1,Size=UDim2.new(1,0,0,mob and 26 or 30),LayoutOrder=2})
+            mk("UIListLayout",{FillDirection=Enum.FillDirection.Horizontal,Padding=UDim.new(0,4),Parent=bRow})
             local function cfgBtn(txt,cb)
-                local b=mk("TextButton",{Parent=bRow,Text=txt,Font=Enum.Font.GothamBold,TextSize=10,TextColor3=T.white,BackgroundColor3=T.btnC,Size=UDim2.new(0,0,0,28),AutomaticSize=Enum.AutomaticSize.X,BorderSizePixel=0})
-                rnd(b,6) mk("UIPadding",{PaddingLeft=UDim.new(0,10),PaddingRight=UDim.new(0,10),Parent=b})
+                local b=mk("TextButton",{Parent=bRow,Text=txt,Font=Enum.Font.GothamBold,TextSize=mob and 9 or 10,TextColor3=T.white,BackgroundColor3=T.btnC,Size=UDim2.new(0,0,0,mob and 24 or 28),AutomaticSize=Enum.AutomaticSize.X,BorderSizePixel=0})
+                rnd(b,6) mk("UIPadding",{PaddingLeft=UDim.new(0,8),PaddingRight=UDim.new(0,8),Parent=b})
                 mk("UIStroke",{Color=T.accent,Thickness=1,Transparency=0.6,Parent=b})
                 b.MouseEnter:Connect(function() tw(b,{BackgroundColor3=T.btnH},0.15) end)
                 b.MouseLeave:Connect(function() tw(b,{BackgroundColor3=T.btnC},0.15) end)
                 b.MouseButton1Click:Connect(cb)
             end
-            cfgBtn("Save",function() if nameBox.Text~="" then SolarynUI:SaveConfig(nameBox.Text) end end)
-            cfgBtn("Load",function() if nameBox.Text~="" then SolarynUI:LoadConfig(nameBox.Text) end end)
-            cfgBtn("List",function()
+            -- Config list container
+            local cfgListF=mk("Frame",{Parent=sec,BackgroundColor3=T.card2,BackgroundTransparency=0.3,Size=UDim2.new(1,0,0,0),Visible=false,AutomaticSize=Enum.AutomaticSize.Y,BorderSizePixel=0,LayoutOrder=3,ClipsDescendants=true})
+            rnd(cfgListF,8) pad(cfgListF,6,6,6,6)
+            mk("UIListLayout",{SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,3),Parent=cfgListF})
+            mk("TextLabel",{Parent=cfgListF,Text="  📂 Saved Configs",Font=Enum.Font.GothamBold,TextSize=mob and 9 or 10,TextColor3=T.accent,BackgroundTransparency=1,Size=UDim2.new(1,0,0,16),TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=0})
+            local cfgScroll=mk("ScrollingFrame",{Parent=cfgListF,Size=UDim2.new(1,0,0,mob and 100 or 130),BackgroundTransparency=1,ScrollBarThickness=2,ScrollBarImageColor3=T.accent,CanvasSize=UDim2.new(0,0,0,0),AutomaticCanvasSize=Enum.AutomaticSize.Y,BorderSizePixel=0,LayoutOrder=1})
+            mk("UIListLayout",{SortOrder=Enum.SortOrder.LayoutOrder,Padding=UDim.new(0,2),Parent=cfgScroll})
+            local noConfLbl=mk("TextLabel",{Parent=cfgScroll,Text="  No configs saved yet",Font=Enum.Font.Gotham,TextSize=mob and 9 or 10,TextColor3=T.dim,BackgroundTransparency=1,Size=UDim2.new(1,0,0,24),TextXAlignment=Enum.TextXAlignment.Left,LayoutOrder=0})
+
+            local function refreshCfgList()
+                for _,c in ipairs(cfgScroll:GetChildren()) do if c:IsA("Frame") then c:Destroy() end end
                 local cfgs=SolarynUI:ListConfigs()
-                SolarynUI:Notify({Title="Configs",Content=#cfgs>0 and table.concat(cfgs,", ") or "No configs found",Duration=5})
+                noConfLbl.Visible=#cfgs==0
+                for idx,cName in ipairs(cfgs) do
+                    local row=mk("Frame",{Parent=cfgScroll,BackgroundColor3=T.card,Size=UDim2.new(1,0,0,mob and 26 or 30),BorderSizePixel=0,LayoutOrder=idx})
+                    rnd(row,6)
+                    mk("TextLabel",{Parent=row,Text="  📄 "..cName,Font=Enum.Font.Gotham,TextSize=mob and 9 or 10,TextColor3=T.white,BackgroundTransparency=1,Size=UDim2.new(0.55,0,1,0),TextXAlignment=Enum.TextXAlignment.Left,TextTruncate=Enum.TextTruncate.AtEnd})
+                    -- Load button
+                    local lb=mk("TextButton",{Parent=row,Text="Load",Font=Enum.Font.GothamBold,TextSize=mob and 8 or 9,TextColor3=T.accent,BackgroundColor3=T.btnC,Size=UDim2.new(0,mob and 36 or 44,0,mob and 20 or 22),Position=UDim2.new(1,mob and -80 or -100,0.5,mob and -10 or -11),BorderSizePixel=0})
+                    rnd(lb,5)
+                    lb.MouseButton1Click:Connect(function() SolarynUI:LoadConfig(cName);nameBox.Text=cName end)
+                    -- Delete button
+                    local db=mk("TextButton",{Parent=row,Text="✕",Font=Enum.Font.GothamBold,TextSize=mob and 9 or 10,TextColor3=T.red,BackgroundColor3=Color3.fromRGB(55,22,28),Size=UDim2.new(0,mob and 20 or 22,0,mob and 20 or 22),Position=UDim2.new(1,mob and -26 or -30,0.5,mob and -10 or -11),BorderSizePixel=0})
+                    rnd(db,5)
+                    db.MouseButton1Click:Connect(function()
+                        pcall(function() delfile(configFolder.."/"..cName..".json") end)
+                        SolarynUI:Notify({Title="Deleted",Content="Removed "..cName,Duration=2})
+                        refreshCfgList()
+                    end)
+                end
+            end
+
+            cfgBtn("Save",function() if nameBox.Text~="" then SolarynUI:SaveConfig(nameBox.Text);refreshCfgList() end end)
+            cfgBtn("Load",function() if nameBox.Text~="" then SolarynUI:LoadConfig(nameBox.Text) end end)
+            cfgBtn("📂 List",function()
+                cfgListF.Visible=not cfgListF.Visible
+                if cfgListF.Visible then refreshCfgList() end
             end)
         end
 
